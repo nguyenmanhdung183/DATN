@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "285771417615",
+    "firebase_url": "https://datn20213838-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "datn20213838",
+    "storage_bucket": "datn20213838.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285771417615:android:97dc5ea7e5fadfebbd3b7a",
+        "android_client_info": {
+          "package_name": "com.example.datn20213838"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEWC5cJW_QZjslCDU4K4dDeaCTqDG5PhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
