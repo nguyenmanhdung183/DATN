@@ -2,7 +2,6 @@ package com.example.datn
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,11 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,18 +30,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.datn20213838.AddRoom
-import com.example.datn20213838.Edit
 import com.example.datn20213838.EditRoom
 import com.example.datn20213838.GlobalData.activeRoom
-import com.example.datn20213838.GlobalData.activeTaskbar
-import com.example.datn20213838.GlobalData.haveNotis
+import com.example.datn20213838.GlobalData.refreshHomePage
 import com.example.datn20213838.GoToDeviceList
 import com.example.datn20213838.R
+import com.example.datn20213838.isUserLoggedIn
 import com.example.datn20213838.roomList
 
 @Composable
 fun HomeScreen(){// nhiều phòng + add
-
+    LaunchedEffect (refreshHomePage.value){
+        refreshHomePage.value =false
+    }
     Column(modifier = Modifier.padding(10.dp)){
         //Text
         Spacer(modifier = Modifier.padding(15.dp))
@@ -76,7 +74,17 @@ fun HomeScreen(){// nhiều phòng + add
                 RoomBox(room.name, room.id)
             }
 
-            AddRoomBox()
+            if(isUserLoggedIn()){
+                AddRoomBox()
+            }
+            else{
+                Text(
+                    text = "Đăng nhập để thêm phòng!",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
         }
     }
 }

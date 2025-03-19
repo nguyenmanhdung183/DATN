@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.runtime.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,6 +66,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     //add thêm
     implementation("com.google.firebase:firebase-database-ktx")
+    implementation ("com.google.firebase:firebase-auth:22.0.0")
 
 
 }

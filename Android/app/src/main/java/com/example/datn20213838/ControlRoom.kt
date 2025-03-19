@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,12 +41,12 @@ import com.example.datn20213838.AddDevice
 import com.example.datn20213838.ChangeTemperature
 import com.example.datn20213838.Edit
 import com.example.datn20213838.GlobalData.activeRoom
+import com.example.datn20213838.GlobalData.refreshDevicePage
 import com.example.datn20213838.GoToAirConditionerControlScreen
 import com.example.datn20213838.GoToDeviceList
 import com.example.datn20213838.R
 import com.example.datn20213838.TurnOff
 import com.example.datn20213838.TurnOn
-import com.example.datn20213838.UpdateDevice
 import com.example.datn20213838.getDevice
 import com.example.datn20213838.listenToFirebase
 import com.example.datn20213838.roomList
@@ -56,6 +55,9 @@ import kotlinx.coroutines.flow.combine
 @Composable
 
 fun ControlMain(roomId:Int, roomName:String){
+    LaunchedEffect (refreshDevicePage.value){
+        refreshDevicePage.value=false
+    }
     Column(modifier = Modifier.padding(10.dp)){
         //Text
         Spacer(modifier = Modifier.padding(15.dp))

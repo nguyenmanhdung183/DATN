@@ -32,8 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.datn20213838.DeleteNoti
 import com.example.datn20213838.GlobalData.newestNoti
+import com.example.datn20213838.GlobalData.userId
 import com.example.datn20213838.NotiData
 import com.example.datn20213838.R
+import com.example.datn20213838.getCurrentUserId
 import com.example.datn20213838.listenToFirebase2
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -151,8 +153,11 @@ fun ClearNotiList(){
 
 
 fun deleteAllNotificationsFromDTB() {
+    if(userId.value=="default_user") {
+        userId.value = getCurrentUserId() ?: "default_user"
+    }
     val database = FirebaseDatabase.getInstance().reference
-    val notiRef = database.child("main").child("noti")
+    val notiRef = database.child(userId.value).child("main").child("noti")
 
     notiRef.removeValue()
         .addOnSuccessListener {
@@ -169,8 +174,10 @@ fun deleteAllNotificationsFromDTB() {
 var notiList = mutableListOf<NotiData>()
 
 fun geUpdateNoti() {
+    var userId = mutableStateOf("default_user")
+    userId.value = getCurrentUserId() ?: "default_user" // Cập nhật userId nếu có
     CoroutineScope(Dispatchers.IO).launch {
-        listenToFirebase2("main/newestNoti").collect { status ->
+        listenToFirebase2("${userId.value}/main/newestNoti").collect { status ->
             if (status != newestNoti.value) {
                 newestNoti.value = status // Cập nhật giá trị mới nhất
                 fetchNotificationsFromFirebase() // Fetch lại noti khi có cập nhật
@@ -182,8 +189,11 @@ fun geUpdateNoti() {
 
 
 fun fetchNotificationsFromFirebase() {
+    if(userId.value=="default_user") {
+        userId.value = getCurrentUserId() ?: "default_user"
+    }
     val database = FirebaseDatabase.getInstance().reference
-    val notiRef = database.child("main").child("noti")
+    val notiRef = database.child(userId.value).child("main").child("noti")
 
     notiRef.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {

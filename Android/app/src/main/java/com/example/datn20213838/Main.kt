@@ -1,10 +1,7 @@
 package com.example.datn
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,6 +14,7 @@ import com.example.datn20213838.GlobalData.controlAriconditioner
 import com.example.datn20213838.GlobalData.edittingDevice
 import com.example.datn20213838.GlobalData.edittingRoom
 import com.example.datn20213838.RoomEdit
+import com.example.datn20213838.getRoomName
 import com.example.datn20213838.roomList
 
 
@@ -28,13 +26,15 @@ fun Main(){//taskbar khai báo rồi ở chỗ Main activity:)))))
             if(activeTaskbar.value=="home") HomeScreen()
             if(activeTaskbar.value=="noti") NotiMain()
             if(activeTaskbar.value=="setting") SetupUI()
-            if(activeTaskbar.value=="devicelist") ControlMain(activeRoom.value,roomList[activeRoom.value].name)
-            if(activeTaskbar.value=="editroom") RoomEdit(edittingRoom.value,roomList[edittingRoom.value].name)
+
+            //if(activeTaskbar.value=="devicelist") ControlMain(activeRoom.value,roomList[activeRoom.value].name)
+            //if(activeTaskbar.value=="editroom") RoomEdit(edittingRoom.value,roomList[edittingRoom.value].name)
+            if(activeTaskbar.value=="devicelist") ControlMain(activeRoom.value,getRoomName(activeRoom.value))
+            if(activeTaskbar.value=="editroom") RoomEdit(edittingRoom.value,getRoomName(activeRoom.value))
             if(activeTaskbar.value=="addroom") AddRoomUI()
             if(activeTaskbar.value=="adddevice") AddDeviceUI()
             if(activeTaskbar.value=="airconditioner") AirConditionerControl(controlAriconditioner.value,FindName(edittingDevice.value))
             if(activeTaskbar.value=="editdevice") DeviceEdit(edittingDevice.value, FindName(edittingDevice.value))
-            if(activeTaskbar.value=="editroom") RoomEdit(edittingRoom.value,roomList[edittingRoom.value].name)
 
         }
         Taskbar()

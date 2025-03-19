@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,8 +27,18 @@ class MainActivity : ComponentActivity() {
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
-                    geUpdateNoti()
+
+                   // geUpdateNoti()
+                   // getDeviceUpdate()
+                    if(isUserLoggedIn()){
+                        LaunchedEffect(Unit) {
+                            geUpdateNoti()
+                            getDeviceUpdate()
+                            getRoomUpdate()
+                        }
+                    }
                     Main()
+
                 }
             }
         }
@@ -46,6 +57,14 @@ object GlobalData {
     var deviceStateChange = mutableStateOf(false)
     var URLFB = mutableStateOf("https://datn20213838-default-rtdb.asia-southeast1.firebasedatabase.app/")
     var newestNoti= mutableStateOf("null")
+    var AuthMsg = mutableStateOf("")
+    var userId = mutableStateOf("default_user")
+    var newestDevice = mutableStateOf("null")
+    var newestRoom = mutableStateOf("null")
+    var recentUpdate = mutableStateOf(false)
+    var refreshHomePage = mutableStateOf(false)
+    var refreshDevicePage = mutableStateOf(false)
+    var AuthState = mutableStateOf(false) // Lưu trạng thái đăng nhập
 
 }
 
