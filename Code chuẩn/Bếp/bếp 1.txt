@@ -1,0 +1,81 @@
+#include <Arduino.h>
+
+#define A0GAS 1      // Chân cảm biến khí gas (có thể thay đổi tùy theo phần cứng của bạn)
+#define D0GAS 2      // Chân trạng thái cảm biến khí (có thể thay đổi tùy theo phần cứng của bạn)
+#define BUTTON 13    // Chân nút bấm (có thể thay đổi tùy theo phần cứng của bạn)
+#define FAN 15       // Chân điều khiển quạt (được cấu hình với OpenDrain)
+
+// Hàm bật quạt
+// FAN nối vào chân B của SN8050, cực E nối với GND, cực C nối với chân âm của quạt, VCC nối chân còn lại của quạt
+void turnOnFan() {
+  digitalWrite(FAN, HIGH);  
+}
+
+// Hàm tắt quạt
+void turnOffFan() {
+  digitalWrite(FAN, LOW);
+}
+
+// Hàm chuyển trạng thái quạt (bật/tắt) khi nhấn nút
+void toggleFan() {
+  static bool fanState = false; 
+  fanState = !fanState;          
+  if (fanState) {
+    turnOnFan();  // Bật quạt
+    Serial.println("Fan ON");
+  } else {
+    turnOffFan();  // Tắt quạt
+    Serial.println("Fan OFF");
+  }
+}
+
+// ✅ Xử lý nút bấm (Chống dội phím)
+void Button() {
+  static bool buttonState = false;
+  static bool lastButtonState = HIGH;
+  
+  buttonState = digitalRead(BUTTON);
+  if (buttonState == LOW && lastButtonState == HIGH) {  // Phát hiện nút bấm
+    delay(30);  // Debounce - Chống dội phím
+    if (digitalRead(BUTTON) == LOW) {
+      Serial.println("Button press");
+      toggleFan();  // Chuyển trạng thái quạt khi nhấn nút
+    }
+  }
+  lastButtonState = buttonState;
+}
+
+// ✅ Kiểm tra khí gas và điều khiển quạt bật/tắt
+void checkGas() {
+  int gasValue = analogRead(A0GAS);  // Đọc giá trị từ cảm biến khí gas
+
+  // Nếu giá trị khí vượt quá ngưỡng nhất định, bật quạt
+  if (gasValue > 400) {  // Điều chỉnh ngưỡng này tùy theo việc hiệu chỉnh cảm biến khí của bạn
+    if (digitalRead(FAN) == HIGH) {  // Nếu quạt đang tắt, bật quạt
+      turnOnFan();
+      Serial.println("Gas detected! Fan ON");
+    }
+  } else {
+    if (digitalRead(FAN) == LOW) {  // Nếu quạt đang bật, tắt quạt
+      turnOffFan();
+      Serial.println("No gas detected. Fan OFF");
+    }
+  }
+}
+
+void setup() {
+  // Cấu hình ban đầu cho giao tiếp Serial và các chân
+  Serial.begin(115200);
+  pinMode(FAN, OUTPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
+  pinMode(A0GAS, INPUT);  // Cấu hình chân cảm biến khí
+
+  // Ban đầu tắt quạt
+  turnOffFan();
+}
+
+void loop() {
+  // Liên tục kiểm tra nút bấm và cảm biến khí trong vòng lặp chính
+  Button();  // Xử lý nút bấm
+  checkGas();  // Kiểm tra khí gas và điều khiển quạt
+}

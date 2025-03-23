@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.datn20213838.DeleteNoti
+import com.example.datn20213838.GlobalData.haveNotis
 import com.example.datn20213838.GlobalData.newestNoti
 import com.example.datn20213838.GlobalData.userId
 import com.example.datn20213838.NotiData
@@ -151,6 +152,9 @@ fun ClearNotiList(){
     notiList.clear()
 }
 
+fun isNotiEmpty():Boolean{
+    return   notiList.isEmpty()
+}
 
 fun deleteAllNotificationsFromDTB() {
     if(userId.value=="default_user") {
@@ -198,6 +202,8 @@ fun fetchNotificationsFromFirebase() {
     notiRef.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             notiList.clear() // Clear old list before updating it with new data
+            haveNotis.value= !isNotiEmpty()
+
             Log.d("clear", "Cleared noti list")
 
             for (notiSnapshot in snapshot.children) {
@@ -226,6 +232,8 @@ fun fetchNotificationsFromFirebase() {
                     text = text
                 )
                 notiList.add(noti)
+                haveNotis.value= !isNotiEmpty()
+
 
                 Log.d("Firebase", "🔔 Thông báo từ $deviceId lúc $hour:$minute ngày $day/$month/$year - $text")
             }

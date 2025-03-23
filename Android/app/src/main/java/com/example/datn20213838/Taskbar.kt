@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +29,8 @@ import com.example.datn20213838.R
 
 @Composable
 fun Taskbar(){
+
+
         Box(contentAlignment = Alignment.Center){
             Image(painter = ColorPainter(Color(0xfff2f2f7)),
                 contentDescription = "",
@@ -93,6 +96,9 @@ fun Taskbar(){
 @Composable
 // lấy dạng icon và trạng thái hoạt động -> Image
 fun IconTaskbar(iconType: String, activeType:Boolean, haveNoti:Boolean=false, size: Dp =36.dp){
+    LaunchedEffect (haveNotis.value){
+        haveNotis.value= !isNotiEmpty()
+    }
     if(iconType=="home"){
         if(activeType){
             Image(
@@ -115,7 +121,7 @@ fun IconTaskbar(iconType: String, activeType:Boolean, haveNoti:Boolean=false, si
                 modifier = Modifier.size(size-4.dp) // Kích thước của icon
             )
         }else{
-            if(haveNoti){
+            if(haveNotis.value){
                 Image(
                     painter = painterResource(id = R.drawable.bellred),
                     contentDescription = "Icon",

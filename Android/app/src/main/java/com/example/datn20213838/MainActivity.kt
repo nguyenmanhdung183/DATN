@@ -1,5 +1,7 @@
 package com.example.datn20213838
 
+import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +21,7 @@ import com.example.datn20213838.ui.theme.DATN20213838Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //createNotificationChannel(this) // Tạo kênh thông báo
         enableEdgeToEdge()
         setContent {
             DATN20213838Theme {
@@ -43,6 +46,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+///
+
+
 }
 
 object GlobalData {

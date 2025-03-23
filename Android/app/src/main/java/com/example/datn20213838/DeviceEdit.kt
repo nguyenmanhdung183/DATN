@@ -253,7 +253,7 @@ fun AddDeviceUI(){
                             if(typeDV!=""){
                                 SaveDevice(temp_name, temp_id, temp_topic, room_id, typeDV)
                             }else{
-                                showToast(context, "Chưa chọn phòng")
+                                showToast(context, "Vui lòng chọn thiết bị")
 
                             }
 

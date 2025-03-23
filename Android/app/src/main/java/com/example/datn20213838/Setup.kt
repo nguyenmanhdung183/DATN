@@ -84,7 +84,8 @@ fun SetupUI() {
                 detectTapGestures (
                     onTap = {
                         Test()
-                            },
+
+                    },
                     )
             }
         )

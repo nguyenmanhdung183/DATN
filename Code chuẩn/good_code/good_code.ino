@@ -5,7 +5,6 @@
 // Thông tin WiFi của bạn
 #define WIFI_SSID "realme"
 #define WIFI_PASSWORD "123456789@"
-#define USER_ID "TcJzM8sKGeWkiaeQJgR7e6G5qxq1"
 
 // Thông tin Firebase
 #define FIREBASE_HOST "https://datn20213838-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -66,8 +65,6 @@ void loop() {
     Button();
     digitalWrite(LED, (ledState == "on") ? HIGH : LOW);
     delay(500);
-    pushNotification("Nút nhấn đã thay đổi trạng thái", DEVICE_ID);
-
 }
 
 // ✅ Đọc trạng thái thiết bị từ Firebase
@@ -132,9 +129,9 @@ void pushNotification(String text, String deviceId) {
   String pushKey = generateKey(); 
 
   // Construct the paths for text and time
-  String pathText = String(USER_ID) + "/main/noti/" + pushKey + "/text";
-  String pathTime = String(USER_ID) + "/main/noti/" + pushKey + "/time";
-  String pathNewestId=String(USER_ID) +"/main/newestNoti";
+  String pathText = "/main/noti/" + pushKey + "/text";
+  String pathTime = "/main/noti/" + pushKey + "/time";
+  String pathNewestId="/main/newestNoti";
   // Upload the text and time
   bool textUploaded = uploadData(pathText, text);
   bool timeUploaded = uploadData(pathTime, idtime);

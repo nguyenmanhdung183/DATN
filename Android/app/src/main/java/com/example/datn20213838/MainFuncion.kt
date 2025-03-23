@@ -4,14 +4,18 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.datn.ClearNotiList
 import com.example.datn.deleteAllNotificationsFromDTB
+import com.example.datn.isNotiEmpty
 import com.example.datn20213838.GlobalData.URLFB
 import com.example.datn20213838.GlobalData.activeRoom
 import com.example.datn20213838.GlobalData.activeTaskbar
 import com.example.datn20213838.GlobalData.controlAriconditioner
 import com.example.datn20213838.GlobalData.edittingDevice
 import com.example.datn20213838.GlobalData.edittingRoom
+import com.example.datn20213838.GlobalData.haveNotis
 import com.example.datn20213838.GlobalData.newestDevice
 import com.example.datn20213838.GlobalData.newestRoom
 import com.example.datn20213838.GlobalData.recentUpdate
@@ -219,6 +223,7 @@ fun DeleteNoti(){
     Log.d("DeleteNoti", "DeleteNoti")
     deleteAllNotificationsFromDTB()
     ClearNotiList()
+    haveNotis.value= !isNotiEmpty()
 }
 
 //////TEST
@@ -228,6 +233,9 @@ fun Test() {
     //loginUser("nguyendung010803@gmail.com", "0974020833")
    // roomList.add(Room(id=1234, name="Phong test", devices=mutableListOf()))
     getDeviceUpdate()
+    haveNotis.value= !isNotiEmpty()
+   // sendNotification(MainActivity.appContext, "Thông báo mới", "Nội dung thông báo!")
+
 }
 
 fun SwitchStatePower(deviceId: Int) {
