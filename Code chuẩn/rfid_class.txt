@@ -1,0 +1,121 @@
+#include <SPI.h>
+#include <MFRC522.h>
+#include <ESP32Servo.h>
+
+class RFID_Door {
+      /*
+  VCC    3.3V
+  GND    GND
+  SCK    18 YELLOW
+  MOSI   23 WHITE
+  MISO   19 GREEN
+  SDA/SS 5 ORANGE
+  RST    22
+  */
+private:
+    int SERVO;
+    bool state = false; // Mặc định là đóng cửa
+    MFRC522 rfid; // Đối tượng RFID
+    Servo myServo;
+    const byte validUID[2][4] = {
+        {0xC3, 0x74, 0xCD, 0x28}, // Thẻ 1
+        {0x33, 0xA2, 0x3F, 0x14}  // Thẻ 2
+    };
+    int validUIDCount = 2; // Số lượng thẻ hợp lệ
+
+public:
+    RFID_Door(int SS,int RS, int SERVO) : rfid(SS, RS) { // Khởi tạo RFID với chân SS
+        this->SERVO = SERVO;
+    }
+
+    void init() {
+        SPI.begin(); // Khởi tạo SPI (ESP32 tự động xử lý các chân)
+        rfid.PCD_Init(); // Khởi tạo RFID
+        myServo.attach(SERVO); // Gán chân điều khiển servo
+        myServo.write(0); // Đặt servo về vị trí đóng cửa
+    }
+    
+    bool getState() {
+        return state;
+    }
+
+    void setState(bool newState) {
+        state = newState;
+    }
+
+    void turnServo(int angle) {
+        myServo.write(angle);
+    }
+
+    void openDoor() {
+        Serial.println("✅ Mở cửa...");
+        turnServo(90); // Mở cửa
+        state = true;
+    }
+
+    void closeDoor() {
+        Serial.println("🔒 Đóng cửa...");
+        turnServo(0); // Đóng cửa
+        state = false;
+    }
+
+    bool isValidUID() {
+        // Kiểm tra nếu UID hợp lệ
+        for (int i = 0; i < validUIDCount; i++) {
+            if (memcmp(rfid.uid.uidByte, validUID[i], 4) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void printUID() {
+        Serial.print("UID: ");
+        for (byte i = 0; i < rfid.uid.size; i++) {
+            Serial.print(rfid.uid.uidByte[i], HEX);
+            Serial.print(" ");
+        }
+        Serial.println();
+    }
+
+    bool checkCard() {
+        bool rt = false;  // Declare rt variable
+        //Serial.println("⏳ Đang chờ thẻ...");
+        if (!rfid.PICC_IsNewCardPresent()) return rt;  // Kiểm tra thẻ mới
+        if (!rfid.PICC_ReadCardSerial()) return rt;   // Đọc serial của thẻ
+
+        //printUID(); // In UID ra Serial Monitor
+        Serial.print("checking...");
+        if (isValidUID()) {
+            Serial.println("✅ Thẻ hợp lệ");
+            rt = true;
+        } else {
+            Serial.println("⛔ Thẻ không hợp lệ!");
+        }
+
+        rfid.PICC_HaltA();  // Dừng giao tiếp với thẻ
+        rfid.PCD_StopCrypto1(); // Dừng mã hóa dữ liệu
+        return rt;
+    }
+};
+
+// Tạo đối tượng RFID_Door với chân SS là 5 và servo kết nối với chân 12
+RFID_Door door(5,15, 12);//18 23 19 5 22 12 15
+
+void setup() {
+
+    Serial.begin(115200);
+    door.init();
+
+}
+
+void loop() {
+    if (door.checkCard()) {
+        if (door.getState()) {
+            door.closeDoor(); // Nếu cửa đang mở thì đóng lại
+        } else {
+            door.openDoor(); // Nếu cửa đang đóng thì mở ra
+        }
+    }
+   //delay(500); // Chờ 500ms để tránh trùng lặp quá nhanh
+}
