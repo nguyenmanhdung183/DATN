@@ -331,7 +331,7 @@ fun AddDeviceUI(){
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf("Chọn loại thiết bị") }
 
-    val items = listOf("Quạt", "Đèn", "Điều hoà")
+    val items = listOf("Quạt", "Đèn", "Điều hoà", "Cửa")
     Spacer(modifier = Modifier.padding(10.dp))
     Box(modifier = Modifier.wrapContentSize().padding(horizontal = 18.dp)) {
         Button(onClick = { expanded = true }) {
@@ -351,6 +351,7 @@ fun AddDeviceUI(){
                         if(item=="Quạt") typeDV="fan"
                         if(item=="Đèn") typeDV="light"
                         if(item=="Điều hoà") typeDV="ac"
+                        if(item=="Cửa") typeDV="door"
                         expanded = false
                     }
                 )

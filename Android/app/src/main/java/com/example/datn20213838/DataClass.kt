@@ -10,10 +10,11 @@ data class Room(
 data class Device(
     val id: Int,     // ID duy nhất của thiết bị
     var name: String,   // Tên thiết bị ("Đèn trần", "Quạt")
-    val type: String,   // "light", "fan","ac"
+    val type: String,   // "light", "fan","ac","door"
     val topic: String,  // MQTT Topic dùng để gửi nhận dữ liệu
     var state: Boolean,  // (Bật/Tắt)
-    var otherState:String?=""// trạng thái khác(nhiệt độ điều hoà)
+    var otherState:String?="",// trạng thái khác(nhiệt độ điều hoà)
+    var password:String?="0000"
 )
 
 

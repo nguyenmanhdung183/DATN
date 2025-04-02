@@ -75,6 +75,14 @@ fun GoToAirConditionerControlScreen(id:Int) {//UI
     Logdata()
 }
 
+fun GoToDoorConfig(id: Int){
+    val temp = activeRoom.value
+    DataReset()
+    activeRoom.value = temp
+    activeTaskbar.value = "door"
+    controlAriconditioner.value = id
+    Logdata()
+}
 
 fun TurnOn(id: Int){
     Log.d("On", "On")
@@ -105,6 +113,37 @@ fun ChangeTemperature(int: Int, action:String){//up down left right on off
         SwitchStatePower(int)
     }else if (action=="off"){
         SwitchStatePower(int)
+    }
+}
+
+fun changePassWord(deviceId: Int, pass: String){
+    val device = getDevice(deviceId)
+
+
+    if (device != null) {
+        //
+        var  r="room"
+        var  d="device"
+        for (room in roomList) {
+            for (device in room.devices) {
+                if (device.id == deviceId) {
+                    r =  room.id.toString()
+                    d = device.id.toString()
+                }
+            }
+        }
+        device.password=pass
+        val database = FirebaseDatabase.getInstance(URLFB.value)
+            .reference.child(userId.value).child(r).child(d).child("password")
+        database.setValue(pass).addOnSuccessListener {
+            println("Gửi dữ liệu thành công!")
+        }.addOnFailureListener {
+            println("Lỗi khi gửi dữ liệu: ${it.message}")
+        }
+
+
+    } else {
+        Log.d("DeviceState", "Không tìm thấy thiết bị với ID: $deviceId")
     }
 }
 

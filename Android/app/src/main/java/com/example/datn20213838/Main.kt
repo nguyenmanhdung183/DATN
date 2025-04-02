@@ -34,6 +34,7 @@ fun Main(){//taskbar khai báo rồi ở chỗ Main activity:)))))
             if(activeTaskbar.value=="addroom") AddRoomUI()
             if(activeTaskbar.value=="adddevice") AddDeviceUI()
             if(activeTaskbar.value=="airconditioner") AirConditionerControl(controlAriconditioner.value,FindName(edittingDevice.value))
+            if(activeTaskbar.value=="door") DoorControl(controlAriconditioner.value,FindName(edittingDevice.value))
             if(activeTaskbar.value=="editdevice") DeviceEdit(edittingDevice.value, FindName(edittingDevice.value))
 
         }
