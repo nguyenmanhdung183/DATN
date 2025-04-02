@@ -49,13 +49,13 @@ public:
 
     void openDoor() {
         Serial.println("✅ Mở cửa...");
-        turnServo(90); // Mở cửa
+        turnServo(0); // Mở cửa
         state = true;
     }
 
     void closeDoor() {
         Serial.println("🔒 Đóng cửa...");
-        turnServo(0); // Đóng cửa
+        turnServo(112); // Đóng cửa
         state = false;
     }
 
