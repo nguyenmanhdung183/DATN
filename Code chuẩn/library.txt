@@ -1,0 +1,6 @@
+=====LCD====
+gfx adafruit
+ssd1306 adafruit
+busio adafruit
+
+address: 0x3C
