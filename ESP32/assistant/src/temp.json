@@ -1,0 +1,90 @@
+{
+    "entities": {
+      "device:device": [
+        {
+          "body": "đèn",
+          "confidence": 0.9995,
+          "end": 7,
+          "entities": [],
+          "id": "1109490037859497",
+          "name": "device",
+          "role": "device",
+          "start": 4,
+          "type": "value",
+          "value": "đèn"
+        }
+      ],
+      "room:room": [
+        {
+          "body": "phòng khách",
+          "confidence": 0.9995,
+          "end": 19,
+          "entities": [],
+          "id": "2125541421226396",
+          "name": "room",
+          "role": "room",
+          "start": 8,
+          "type": "value",
+          "value": "phòng khách"
+        }
+      ],
+      "state:state": [
+        {
+          "body": "bật",
+          "confidence": 0.9995,
+          "end": 3,
+          "entities": [],
+          "id": "1242945640791988",
+          "name": "state",
+          "role": "state",
+          "start": 0,
+          "type": "value",
+          "value": "bật"
+        }
+      ]
+    },
+    "intents": [
+      {
+        "confidence": 0.9999787811971367,
+        "id": "1877206466152053",
+        "name": "on_off"
+      }
+    ],
+    "speech": {
+      "confidence": 0.918,
+      "tokens": [
+        {
+          "end": 0,
+          "start": 0,
+          "token": ""
+        },
+        {
+          "end": 240,
+          "start": 0,
+          "token": "bật"
+        },
+        {
+          "end": 420,
+          "start": 240,
+          "token": "đèn"
+        },
+        {
+          "end": 780,
+          "start": 420,
+          "token": "phòng"
+        },
+        {
+          "end": 1020,
+          "start": 780,
+          "token": "khách."
+        },
+        {
+          "end": 1260,
+          "start": 1020,
+          "token": ""
+        }
+      ]
+    },
+    "text": "bật đèn phòng khách",
+    "traits": {}
+  }

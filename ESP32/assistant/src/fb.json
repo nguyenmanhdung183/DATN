@@ -1,0 +1,56 @@
+{
+    "23714458": {
+      "82322702": {
+        "devicename": "Thông Gió",
+        "devicetype": "fan",
+        "status": "off"
+      },
+      "903872522": {
+        "devicename": "Đèn 2",
+        "devicetype": "light",
+        "status": "off"
+      },
+      "roomname": "Bếp"
+    },
+    "323238991": {
+      "716502344": {
+        "action": "up",
+        "count": "1",
+        "devicename": "Điều hoà",
+        "devicetype": "ac",
+        "status": "on"
+      },
+      "858258186": {
+        "devicename": "Quạt 1",
+        "devicetype": "fan",
+        "status": "on"
+      },
+      "roomname": "Phòng Ngủ"
+    },
+    "374566167": {
+      "254010416": {
+        "devicename": "Đèn",
+        "devicetype": "light",
+        "status": "off"
+      },
+      "503832430": {
+        "devicename": "Cua khach",
+        "devicetype": "door",
+        "password": "1111",
+        "status": "off"
+      },
+      "934685071": {
+        "devicename": "Đèn",
+        "devicetype": "fan",
+        "status": "on"
+      },
+      "roomname": "Phòng Khách"
+    },
+    "main": {
+      "hello world": "ndung010803@gmail.com",
+      "newestDevice": "254010416",
+      "newestNoti": "esp32w2.20.50.56.24.03.2025",
+      "newestRoom": "23714458"
+    }
+  }
+  
