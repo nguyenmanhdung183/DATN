@@ -1,0 +1,78 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include"wifi_and_firebase.h"
+#include"wit.h"
+#include"process_action.h"
+#include"SPIFFS.h"
+#include"micro.h"
+void setup() {
+  Serial.begin(115200);
+  //setupWifiFirebase();
+
+
+  #if 0 // oke nhé nhưng chưa có Microphone
+  File file;
+  if (!SPIFFS.begin(true)) {
+    Serial.println("Không thể mount SPIFFS");
+    return;
+  }
+
+  file = SPIFFS.open("/bdpk.wav", "r");
+  if (!file) {
+      Serial.println("Không thể mở file .wav");
+      return;
+  }
+
+   WIT wit;
+   wit.sentData(file);
+
+  Action action(wit.getData(), fetchJsonFirebase());
+  action.decide();
+
+  file.close();
+  SPIFFS.end();
+
+  #endif
+
+
+  #if 0 // config với Microphone
+  if (!SPIFFS.begin(true)) {
+    Serial.println("SPIFFS failed");
+    while (true) delay(1000);
+  }
+  Microphone mic;
+  mic.setRecordTime(3); // Ghi âm trong 5 giây
+  if (mic.record()) {
+    File audioFile = mic.getAudioFile();
+    if (audioFile) {
+      WIT wit;
+      wit.sentData(audioFile); // Gửi dữ liệu âm thanh đến Wit.ai
+
+    }
+}
+SPIFFS.end();
+
+  #endif
+
+  
+  File file;
+  if (!SPIFFS.begin(true)) {
+    Serial.println("Không thể mount SPIFFS");
+    return;
+  }
+
+  Microphone mic;
+  mic.setRecordTime(3); // Ghi âm trong 5 giây
+  mic.record(); // Ghi âm
+  mic.printAudioSample(); // In mẫu âm thanh
+
+
+  // Đợi một chút để đảm bảo mọi thứ đã được in ra
+  delay(2000);
+  Serial.println("Hoàn tất!");
+
+}
+
+void loop() {
+  // không làm gì
+}
