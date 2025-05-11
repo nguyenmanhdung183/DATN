@@ -12,6 +12,9 @@ void initButton(int buttonPin) {
     pinMode(buttonPin, INPUT);
 }
 
+void initBuzzer(int buzzerPin) {
+    pinMode(buzzerPin, OUTPUT); // Thiết lập chân buzzer là OUTPUT
+}
 
 bool getPressedButton(int buttonPin){
     bool rt = false;
@@ -57,5 +60,18 @@ void Led() {
         }
     } else {
         digitalWrite(2, HIGH);  // Nếu không thu âm, giữ LED bật liên tục
+    }
+}
+
+
+void playBuzzer(int buzzerPin, int time) {
+    if(time <= 0) {
+        return; 
+    }
+    for(int i = 0; i < time; i++) {
+        digitalWrite(buzzerPin, HIGH); // Buzzer bật
+        delay(100); // Thời gian bật
+        digitalWrite(buzzerPin, LOW); // Buzzer tắt
+        delay(100); // Thời gian tắt
     }
 }

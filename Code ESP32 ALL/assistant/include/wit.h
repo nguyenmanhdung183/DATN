@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
 #include <HTTPClient.h>
+#include <led_button.h>
 
 struct Data {
     String room="";
@@ -66,11 +67,15 @@ public:
             dt.device = device;
             dt.status = status;
             */
+        bool isValid1 = false;
+        bool isValid2 = false;
+        bool isValid3 = false;
 
                     // Kiểm tra sự tồn tại của các trường trong JSON
         if (doc["entities"].containsKey("room:room") && doc["entities"]["room:room"].is<JsonArray>() && doc["entities"]["room:room"][0].containsKey("value")) {
             const char* room = doc["entities"]["room:room"][0]["value"];
             dt.room = handle_room_name(room);
+            isValid1=true;
         } else {
             Serial.println("Không tìm thấy thông tin phòng trong phản hồi.");
         }
@@ -78,6 +83,8 @@ public:
         if (doc["entities"].containsKey("device:device") && doc["entities"]["device:device"].is<JsonArray>() && doc["entities"]["device:device"][0].containsKey("value")) {
             const char* device = doc["entities"]["device:device"][0]["value"];
             dt.device = device;
+            isValid2=true;
+
         } else {
             Serial.println("Không tìm thấy thông tin thiết bị trong phản hồi.");
         }
@@ -85,10 +92,17 @@ public:
         if (doc["entities"].containsKey("state:state") && doc["entities"]["state:state"].is<JsonArray>() && doc["entities"]["state:state"][0].containsKey("value")) {
             const char* status = doc["entities"]["state:state"][0]["value"];
             dt.status = status;
+            isValid3=true;
+
         } else {
             Serial.println("Không tìm thấy thông tin trạng thái trong phản hồi.");
         }
         
+        if(isValid1 && isValid2 && isValid3){
+            playBuzzer(27, 2);
+        }else{
+            playBuzzer(27, 3);
+        }
             Serial.println(dt.room.c_str());
             Serial.println(dt.device.c_str());
             Serial.println(dt.status.c_str());

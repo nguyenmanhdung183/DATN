@@ -19,6 +19,7 @@ void setup() {
     initLed();
     initButton(BUTTON_PIN);// chân 12 làm input
     i2sInit();
+    initBuzzer(27); // Chân 27 làm output cho buzzer
 
     Led();
     Serial.println("Done Init");
@@ -50,9 +51,11 @@ void setup() {
 }
 
 void loop() {
-    //if(getPressedButton(BUTTON_PIN) && !isRecording ){
-
-    if(((millis()>2000 && millis()<3000) || (millis()>20000 && millis()<21000)) && !isRecording ){
+    if(getPressedButton(BUTTON_PIN) && !isRecording ){
+        delay(1000);
+        // Buzzer kêu 1 lần
+        playBuzzer(27, 1);
+  //  if(((millis()>2000 && millis()<3000) || (millis()>20000 && millis()<21000)) && !isRecording ){
         WIT wit;
         initWavBuffer();
 
