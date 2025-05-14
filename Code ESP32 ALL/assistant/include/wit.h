@@ -42,6 +42,8 @@ public:
 
 
         int httpResponseCode = http.POST(audioData, fileSize);
+        // free(audioData);
+        // audioData = nullptr;
         if (httpResponseCode > 0) {
             String response = http.getString();
             Serial.println("Phản hồi từ Wit.ai:");
@@ -109,6 +111,7 @@ public:
 
         } else {
             Serial.printf("Lỗi gửi POST: %d\n", httpResponseCode);
+             playBuzzer(27, 4);
         }
         //delete[] audioData;
 

@@ -55,6 +55,7 @@ void loop() {
         delay(1000);
         // Buzzer kêu 1 lần
         playBuzzer(27, 1);
+        delay(200);
   //  if(((millis()>2000 && millis()<3000) || (millis()>20000 && millis()<21000)) && !isRecording ){
         WIT wit;
         initWavBuffer();
@@ -65,12 +66,16 @@ void loop() {
         } else {
             Serial.println("Error: wav_buffer is empty or not initialized");
         }
+        free(wav_buffer);
+        wav_buffer = nullptr;
+
+
         Action action(wit.getData(), fetchJsonFirebase());
         action.decide();
 
         // Giải phóng bộ đệm WAV sau khi xử lý xong
-        free(wav_buffer);
-        wav_buffer = nullptr;
+        // free(wav_buffer);
+        // wav_buffer = nullptr;
 
     }
 }
