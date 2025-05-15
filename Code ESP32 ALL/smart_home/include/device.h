@@ -8,6 +8,8 @@
 #define PHONG_NGU "323238991"
 #define PHONG_KHACH "374566167"
 
+extern std::vector<int> buttonPins; // Chân các nút bấm
+
 class Device {
   private:
       int pin;

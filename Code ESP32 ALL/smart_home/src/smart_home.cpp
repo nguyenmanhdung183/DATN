@@ -15,6 +15,7 @@
 #define PHONG_BEP "23714458"
 #define PHONG_NGU "323238991"
 #define PHONG_KHACH "374566167"
+#define PHONG_GARA "589955086"
 
 
 //-------------------------------------------------STREAM------------------------------------------------------
@@ -22,7 +23,7 @@
 void StreamData(std::vector<Device*> &dvList){
   static unsigned long lastTime = 0;
   unsigned long currentTime = millis(); 
-  if (currentTime - lastTime > 1000) {  // Gửi dữ liệu mỗi 10 giây
+  if (currentTime - lastTime > 1000) {  // nhận dữ liệu mỗi 1 giây
     lastTime = currentTime;
     for(int i=0;i<dvList.size();i++){
       String st = downloadData(dvList[i]->getPath() + "/status");
@@ -33,14 +34,16 @@ void StreamData(std::vector<Device*> &dvList){
 }
 #endif
 //-------------------------------------------------END STREAM------------------------------------------------------
-
+std::vector<int> buttonPins ={};  // Chân các nút bấm
 std::vector<Device*> Device::dvList;
+volatile int lastPressedButton = -1;
+
 Fan fanBep(27, "82322702", "Quạt 1", PHONG_BEP, 26);// 1 chan noi 5v 1 chan noi BJT cuc C 
-Light lightBep(25, "903872522", "Đèn 1", PHONG_BEP, 33);// 1 chân nối vcc (25), chân điều khiển kéo xuống low thì sáng
+Light lightBep(25, "903872522", "Đèn 1", PHONG_BEP, 33);// 1 chân nối vcc , chân điều khiển kéo xuống low thì sáng (25)
 Light lightHall(12, "null", "Đèn 2", PHONG_KHACH, -1,false);
 Light lightKhach(14, "254010416", "Đèn 3", PHONG_KHACH, 34);
 Light lighNgu(22, "274878463", "Đèn 5", PHONG_NGU, 4); // chân 4 là chân điều khiển, chân 22 là chân nối dây âm
-//Light lightGarage(23, "null", "Đèn 4", PHONG_KHACH, -1,false);
+Light lightGarage(19, "356325987", "Đèn 4", PHONG_GARA, -1);
 AirConditioner airC(18, "716502344", "Điều hòa", PHONG_NGU, -1);
 
 MQ2 mq2(-1,32, 200);// A, D, Threshold, dùng Analog cho đẹp :)))) (cảm biến gas) 2 chan nguon 5v, 1 chan tin hieu
@@ -55,11 +58,23 @@ void setup() {
   lightHall.begin();
   lightKhach.begin();
   lighNgu.begin();
+  lightGarage.begin();
   mq2.begin();
   fm52.begin();
   dht11.begin();
   airC.begin();
   buttonBegin();
+
+  // in ra chân button
+  Serial.print("Button pins: ");
+  for(int i = 0; i < buttonPins.size(); i++) {
+    Serial.print("Button pin: ");
+    Serial.println(buttonPins[i]);
+  }
+  Serial.println("Start Streaming data");
+  StreamData(Device::dvList);
+  Serial.println("Setup done");
+
 }
 
 void loop() {
@@ -95,7 +110,7 @@ void loop() {
     airC.setTemperature(String(dht11.getTemperature()));
    // airC.sendOtherStateToFirebase();
   }
-
+#if 0
   switch(getPressedButton()){
     case 33:
       lightBep.buttonPress();
@@ -109,9 +124,28 @@ void loop() {
     case 34:
       lightKhach.buttonPress();
       break;
-
     default:
       break;
   }
+#endif
+if (lastPressedButton != -1) {
+        switch (lastPressedButton) {
+            case 33:
+                lightBep.buttonPress();
+                break;
+            case 26:
+                fanBep.buttonPress();
+                break;
+            case 4:
+                lighNgu.buttonPress();
+                break;
+            case 34:
+                lightKhach.buttonPress();
+                break;
+            default:
+                break;
+        }
+        lastPressedButton = -1; // Xóa trạng thái sau khi xử lý
+    }
 
 }

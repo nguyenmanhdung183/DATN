@@ -8,14 +8,14 @@
 class FM52{
   private:
     int pin;
-    bool state;// false là k có, true là có
+   // bool state;// false là k có, true là có
   public:
     void begin(){
       pinMode(pin, INPUT);
     }
     FM52(int pin){
       this->pin = pin;
-      this->state = false;
+    //  this->state = false;
     }
 /*     int isDetectedClose(){ 
       // -1 là chuyển sang k có, 
@@ -34,7 +34,7 @@ class FM52{
       }
     } */
    bool isDetectedClose(){
-     state = !digitalRead(pin);
+     //state = !digitalRead(pin);
      return !digitalRead(pin);
    }
 

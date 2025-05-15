@@ -9,6 +9,7 @@ public:
   void begin(){
       pinMode(getPin(), OUTPUT);
       digitalWrite(getPin(), LOW);
+      setMainState(true);
   }
   void turnOnLed() {
       if(!getMainState()) {

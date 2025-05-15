@@ -11,6 +11,7 @@ class AirConditioner : public Device {
         void begin() {
             pinMode(getPin(), OUTPUT);
             digitalWrite(getPin(), LOW);
+            setMainState(false);
         }
         void turnOnAC() {
             if(!getMainState()) {

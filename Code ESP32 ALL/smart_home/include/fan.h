@@ -12,6 +12,7 @@ public:
   void begin() {  // Hàm này thay thế việc setup pinMode
     pinMode(getPin(), OUTPUT);
     digitalWrite(getPin(), LOW);
+    setMainState(false);
 }
   void turnOnFan() {
       if(!getMainState()) {
