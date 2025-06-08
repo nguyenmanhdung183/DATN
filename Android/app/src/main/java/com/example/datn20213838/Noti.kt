@@ -45,7 +45,16 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+import android.content.Context
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import android.Manifest
+import android.os.Build
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.example.datn20213838.GlobalData.newestNotiData
+import com.example.datn20213838.GlobalData.notiCount
+import java.time.LocalDateTime
 
 @Composable
 fun NotiMain() {
@@ -61,6 +70,7 @@ fun NotiMain() {
             Log.d("currentNoti2", currentNoti2.value)
 
             currentNoti2.value = currentNoti1.value
+            newestNotiData.value = currentNoti2.value
 
             // Cập nhật danh sách thông báo khi có thông báo mới
             notiListState.value = notiList.toList()
@@ -150,6 +160,7 @@ fun NotiBox(text: String, time: String, isRead: Boolean=false){
 
 fun ClearNotiList(){
     notiList.clear()
+    notiCount.value = notiList.size
 }
 
 fun isNotiEmpty():Boolean{
@@ -177,14 +188,14 @@ fun deleteAllNotificationsFromDTB() {
 
 var notiList = mutableListOf<NotiData>()
 
-fun geUpdateNoti() {
+fun geUpdateNoti(context: Context) {
     var userId = mutableStateOf("default_user")
     userId.value = getCurrentUserId() ?: "default_user" // Cập nhật userId nếu có
     CoroutineScope(Dispatchers.IO).launch {
         listenToFirebase2("${userId.value}/main/newestNoti").collect { status ->
             if (status != newestNoti.value) {
                 newestNoti.value = status // Cập nhật giá trị mới nhất
-                fetchNotificationsFromFirebase() // Fetch lại noti khi có cập nhật
+                fetchNotificationsFromFirebase(context) // Fetch lại noti khi có cập nhật
             }
             Log.d("status", status)
         }
@@ -192,12 +203,14 @@ fun geUpdateNoti() {
 }
 
 
-fun fetchNotificationsFromFirebase() {
+fun fetchNotificationsFromFirebase(context: Context) {
     if(userId.value=="default_user") {
         userId.value = getCurrentUserId() ?: "default_user"
     }
     val database = FirebaseDatabase.getInstance().reference
     val notiRef = database.child(userId.value).child("main").child("noti")
+    var lastNotiId: String? = null
+    //var notiCount:Int = notiList.size
 
     notiRef.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -231,21 +244,49 @@ fun fetchNotificationsFromFirebase() {
                     year = year,
                     text = text
                 )
+/*
+                if (notiId != lastNotiId) {
+                    lastNotiId = notiId
+                    showLocalNotification(context, text, timeRaw)
+                }
+ */
+
+
                 notiList.add(noti)
                 haveNotis.value= !isNotiEmpty()
-
 
                 Log.d("Firebase", "🔔 Thông báo từ $deviceId lúc $hour:$minute ngày $day/$month/$year - $text")
             }
 
+
             // Log the updated list
             Log.d("Firebase", "🔔 Danh sách thông báo cập nhật: $notiList")
+
         }
 
         override fun onCancelled(error: DatabaseError) {
             Log.e("Firebase", "❌ Lỗi khi lấy dữ liệu", error.toException())
         }
     })
+
+    //sortNotiListByTime()  // Thêm dòng này
+
+    if(notiCount.value < notiList.size){
+        notiList.forEach { noti ->
+            Log.d("Notilist", "🔔 ${noti.text} lúc ${noti.hour}:${noti.minute}")
+        }
+       // val latestNoti = notiList.get(notiList.size-1)
+        val latestNoti = getLatestNoti()
+
+        if (latestNoti != null) {
+            val title = "${latestNoti.text}"
+            val message = "${latestNoti.text} lúc ${latestNoti.hour}:${latestNoti.minute}"
+            showLocalNotification(context, title, message)
+        }
+        notiCount.value = notiList.size
+        notiCount.value= notiList.size
+        // lấy trạng thái lastest trong notilist và dùng hàm showLocalNotification
+    }
 }
 
 // Parsing the time data
@@ -274,5 +315,37 @@ fun parseTimeData(timeRaw: String): List<Any> {
         // If the timeRaw format doesn't have 6 parts, return default values
         Log.e("parseTimeData", "Invalid time format: $timeRaw")
         listOf("Unknown", "00", "00", "01", "01", "2000")
+    }
+}
+
+
+fun showLocalNotification(context: Context, title: String, message: String) {
+    // Android 13+ cần kiểm tra quyền
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+    }
+
+    val builder = NotificationCompat.Builder(context, "noti_channel_id")
+        .setSmallIcon(R.drawable.logo) // Hoặc drawable bạn tạo
+        .setContentTitle(title)
+        .setContentText(message)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+    NotificationManagerCompat.from(context).notify(System.currentTimeMillis().toInt(), builder.build())
+}
+
+fun getLatestNoti(): NotiData? {
+    return notiList.maxByOrNull { noti ->
+        val year = noti.year.toIntOrNull() ?: 0
+        val month = noti.month.toIntOrNull() ?: 0
+        val day = noti.day.toIntOrNull() ?: 0
+        val hour = noti.hour.toIntOrNull() ?: 0
+        val minute = noti.minute.toIntOrNull() ?: 0
+
+        // Tính "điểm thời gian" kiểu thủ công
+        year * 365 * 24 * 60 + month * 31 * 24 * 60 + day * 24 * 60 + hour * 60 + minute
     }
 }

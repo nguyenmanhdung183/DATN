@@ -17,11 +17,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.datn.Main
 import com.example.datn.geUpdateNoti
 import com.example.datn20213838.ui.theme.DATN20213838Theme
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import android.Manifest
+import androidx.compose.ui.platform.LocalContext
+import com.example.datn.notiList
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //createNotificationChannel(this) // Tạo kênh thông báo
+        createNotificationChannel(this) // Tạo kênh thông báo
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
+
+
         enableEdgeToEdge()
         setContent {
             DATN20213838Theme {
@@ -34,8 +56,10 @@ class MainActivity : ComponentActivity() {
                    // geUpdateNoti()
                    // getDeviceUpdate()
                     if(isUserLoggedIn()){
+                        val context = LocalContext.current
+
                         LaunchedEffect(Unit) {
-                            geUpdateNoti()
+                            geUpdateNoti(context)
                             getDeviceUpdate()
                             getRoomUpdate()
                         }
@@ -72,6 +96,8 @@ object GlobalData {
     var refreshHomePage = mutableStateOf(false)
     var refreshDevicePage = mutableStateOf(false)
     var AuthState = mutableStateOf(false) // Lưu trạng thái đăng nhập
+    var notiCount = mutableStateOf(notiList.size)
+    var newestNotiData = mutableStateOf("null")
 
 }
 
@@ -89,5 +115,22 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     DATN20213838Theme {
         Greeting("Android")
+    }
+}
+
+
+private fun createNotificationChannel(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(
+            "noti_channel_id",
+            "Thông báo",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Kênh thông báo chính"
+        }
+
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 }
