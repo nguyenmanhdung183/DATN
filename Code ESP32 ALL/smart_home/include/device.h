@@ -22,10 +22,8 @@ class Device {
       String roomId; // ID của phòng chứa thiết bị
       int buttonPin;
       bool needFbUpdate = true;// mặc định là có nhé
-  
   public:
     static std::vector<Device*> dvList;
-
       Device(int pin, String id = "unknown", String name = "unknown", String roomId = "unknown", int buttonPin = -1, bool needFbUpdate = true) {
         this->pin = pin;
           this->id = id;
@@ -44,9 +42,7 @@ class Device {
             dvList.push_back(this);
           }
       }
-  
       ~Device() {}
-  
       void setMainState(bool state) { mainState = state; }
       bool getMainState() { return mainState; }
       void setOtherState(String state) { otherState = state; }
@@ -61,7 +57,6 @@ class Device {
       String getPath() { return path; }
       int getButtonPin() { return buttonPin; }
       void setButtonPin(int buttonPin) { this->buttonPin = buttonPin; }
-      
       void setRoomId(String roomId) { this->roomId = roomId; }
       String getRoomId() { return roomId; }        
       virtual void FbUpdate(String st) = 0; 
